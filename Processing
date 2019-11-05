@@ -1,3 +1,13 @@
+/*
+   1. Morph and Vertices Examples
+   Processing.org
+   
+   2. Arduino Project Hub
+   Ian Rogers
+   Rotational Symmetry Drawing    
+*/
+
+
 import processing.serial.*;
 
 Serial myPort;  // The serial port

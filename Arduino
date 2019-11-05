@@ -1,3 +1,13 @@
+/*
+   DIGF 6037 Creation & Computation
+   Kate Hartman & Nick Puckett
+   Experiment 3 - Lab 2
+   Arduino to Processing - sending value for (3) analog values
+
+   Circuit: 
+   (3) analog sensors connected to pins A0, A1, A2   
+*/
+
 int switch1val;
 
 int mappedSensor1;

@@ -1,0 +1,115 @@
+import processing.serial.*;
+
+Serial myPort;  // The serial port
+int switch1val; 
+int sensor1val; 
+int sensor2val; 
+int sensor3val; 
+int sensor4val; 
+
+float mappedSensor1;
+float mappedSensor2; 
+float mappedSensor3; 
+float mappedSensor4; 
+
+float strokeColor;
+int S=1;
+int radius1=100;
+int last_changed = millis();
+int drawRate = 100;
+
+/////////////////////////////////////////////////////
+
+void setup() {
+  
+  fullScreen();
+  background(0) ;
+  noFill();
+  printArray(Serial.list());
+  String portName = Serial.list()[4]; 
+  myPort = new Serial(this, portName, 9600); 
+  // read incoming bytes to a buffer
+  // until you get a linefeed (ASCII 10):
+  myPort.bufferUntil('\n');
+}
+
+/////////////////////////////////////////////////////
+
+void draw() {
+   if (switch1val == 1 ){ background(0, 0, 0);
+   }
+
+  //formation rate
+  if ((millis() - last_changed) > drawRate) {
+    translate(width / 2  , height / 2  );
+    
+    if (radius1 >= height/2) { //radius1
+      S=-1;
+    }
+    if (radius1 <=0) {
+      S=1;
+    }
+
+    radius1 += S * 10; //defining radius
+    
+    mandala();
+  }
+}
+
+///////////////////////////////////////////////////
+
+void mandala(){
+  
+    //circleRes - no. of vertices
+    //float circleRes1 = int(random(5, 10));
+    float circleRes1 =  sensor1val;
+    float angle1 = TAU / circleRes1;
+      strokeWeight(1);
+      
+    //random value generation
+    if (random(0, 1) <= 0.3) {
+      stroke(sensor2val, sensor3val, sensor4val);
+      } 
+    else if (random(0,1)>0.3 && random(0,1)<=0.6) {
+      stroke(sensor2val,sensor3val,sensor4val); 
+      }
+    else {
+      stroke(sensor2val, sensor3val, sensor4val); 
+     }
+
+    //shape formation
+    beginShape();
+    for (int i = 0; i <= 10; i++) {
+      float x1 = cos(angle1 * i) * radius1;
+      float y1 = sin(angle1 * i) * radius1;
+      vertex(x1, y1);
+    }
+    endShape();
+    last_changed = millis();
+}
+
+/////////////////////////////////////////////////    
+
+
+void serialEvent(Serial myPort) {
+  String myString = myPort.readStringUntil('\n'); // read the serial buffer:
+  if (myString != null) {
+    // println(myString);
+    myString = trim(myString);
+
+    // split the string at the commas
+    // and convert the sections into integers:
+    int sensors[] = int(split(myString, ','));
+    for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
+      print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t");
+    }
+    println();
+    sensor1val = sensors[0];  
+    sensor2val = sensors[1]; 
+    sensor3val = sensors[2];
+    sensor4val = sensors[3];
+    
+    switch1val = sensors[4];
+    
+  }
+}
